@@ -1,5 +1,6 @@
 from tkinter import *
 from math import *
+
 window = Tk()
 canvas = Canvas(window,width = 800, height = 800)
 window.title('Plagia paint')
@@ -70,6 +71,7 @@ def drawTools():
     canvas.create_arc(x+120,5,x+150,30,outline="black")
     canvas.create_line(x+150,5,x+175,30)
     canvas.create_oval(x+180,10,x+210,20,outline="black")
+    canvas.create_text(550,10, text='Save')
 
 
 def create_circle(x,y,r,c,w,f,g):
@@ -106,6 +108,10 @@ def OnMousePress(event):
         else:
             choice=record
         #print(choice)
+    elif(event.y < 30 and event.x < 520 + 35):
+        S = event.x - 30*len(color)-30
+        saveb = S // 30
+        Save()
             
 
     else:
@@ -144,6 +150,9 @@ def OnMouseRelease(event):
 
 def MagicClear(event):
     print("Wow")
+    
+def Save():
+    print("save func")
 
             
 
@@ -155,6 +164,4 @@ window.bind("<Escape>", MagicClear)
 drawAll()
 
 window.mainloop()
-
-
 
