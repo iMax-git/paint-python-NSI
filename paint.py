@@ -1,5 +1,6 @@
 from tkinter import *
 from math import *
+import csv 
 
 window = Tk()
 canvas = Canvas(window,width = 800, height = 800)
@@ -25,15 +26,17 @@ width = 0
 choice=1
 record = 0
 
+csv_file = "value.csv"
+
 bg = 0
 fg = 0
 g = 0
 
 
+
 def drawAll():
     global r, bg
     canvas.delete("all")
-    canvas.create_text(750,10, text='width of the line : '+str(width))
     for c in content:
         create_circle(c["x"],c["y"], c["r"], c["c"], c["w"],c["f"],c["g"])
     if onDrag:
@@ -72,6 +75,8 @@ def drawTools():
     canvas.create_line(x+150,5,x+175,30)
     canvas.create_oval(x+180,10,x+210,20,outline="black")
     canvas.create_text(550,10, text='Save')
+    canvas.create_text(650,10, text='Reset Save')
+    canvas.create_text(720,15, text='<-')
 
 
 def create_circle(x,y,r,c,w,f,g):
@@ -108,11 +113,12 @@ def OnMousePress(event):
         else:
             choice=record
         #print(choice)
-    elif(event.y < 30 and event.x < 520 + 35):
-        S = event.x - 30*len(color)-30
-        saveb = S // 30
+    elif(event.y < 30 and event.x < 550 + 35):
         Save()
-            
+    elif(event.y < 30 and event.x < 650 + 35):
+        ResetSave()
+    elif(event.y < 30 and event.x < 720 + 10):
+        BackTime()
 
     else:
         onDrag = True
@@ -147,20 +153,46 @@ def OnMouseRelease(event):
             startx = starty = endx = endy = 0
             onDrag = False    
         drawAll()
-
-def MagicClear(event):
-    print("Wow")
     
 def Save():
-    print("save func")
+    csv_columns = ['x','y','r','c','w','f','g']
+    with open(csv_file, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+        writer.writeheader()
+        for data in content:
+            writer.writerow(data)
+        print('Saving Success')
 
-            
+def ReadSave():
+    with open(csv_file, newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            print(row['x'], row['y'], row['r'], row['c'], row['w'], row['g'], row['f'])
+            content.append({"x":int(row['x']),
+                            "y":int(row['y']),
+                            "r":float(row['r']),
+                            "c":int(row['c']),
+                            "w":int(row['w']),
+                            "f":int(row['f']),
+                            "g":int(row['g'])
+                            })
+        print("Project Loaded")
+
+def ResetSave():
+    content.clear()
+    Save()
+    print('Save Clear')
+
+def BackTime():
+    number = len(content)
+    print(number)
+    if(number > 0):
+        for i in content: content.pop()
 
 window.bind("<ButtonPress-1>", OnMousePress)
 window.bind("<ButtonRelease-1>", OnMouseRelease)
 window.bind("<B1-Motion>", OnMouseDrag)
-window.bind("<Escape>", MagicClear)
-
+ReadSave()
 drawAll()
 
 window.mainloop()
