@@ -109,12 +109,13 @@ def OnMousePress(event):
         choice=choice-1
         if(choice!=-1):
             record=choice
-            print(record)
+            #print(record)
         else:
             choice=record
         #print(choice)
     elif(event.y < 30 and event.x < 550 + 35):
         Save()
+        print("Saving Success")
     elif(event.y < 30 and event.x < 650 + 35):
         ResetSave()
     elif(event.y < 30 and event.x < 720 + 10):
@@ -161,13 +162,12 @@ def Save():
         writer.writeheader()
         for data in content:
             writer.writerow(data)
-        print('Saving Success')
 
 def ReadSave():
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            print(row['x'], row['y'], row['r'], row['c'], row['w'], row['g'], row['f'])
+            #print(row['x'], row['y'], row['r'], row['c'], row['w'], row['g'], row['f'])
             content.append({"x":int(row['x']),
                             "y":int(row['y']),
                             "r":float(row['r']),
@@ -185,9 +185,9 @@ def ResetSave():
 
 def BackTime():
     number = len(content)
-    print(number)
-    if(number > 0):
-        for i in content: content.pop()
+    #print(number)
+    if(number > 0): content.pop()
+
 
 window.bind("<ButtonPress-1>", OnMousePress)
 window.bind("<ButtonRelease-1>", OnMouseRelease)
